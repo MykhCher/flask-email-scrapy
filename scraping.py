@@ -5,12 +5,19 @@ import re
 
 
 class ScrapingSpider(CrawlSpider):
+    """
+    Core class, where all logic is done. 
+    Basic generated spider with some result validation.
+    """
     name = "scraping"
     start_urls = []
 
     rules = (Rule(LinkExtractor(), callback="parse_item", follow=False),)
 
     def __init__(self, category="", **kwargs):
+        """
+        Accept URL from user-submitted form.
+        """
         self.myBaseUrl = category
         self.start_urls.append(self.myBaseUrl)
         super().__init__(**kwargs)

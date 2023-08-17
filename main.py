@@ -6,7 +6,6 @@ import crochet
 crochet.setup()
 
 import os
-import time
 import json
 import asyncio
 
@@ -23,6 +22,7 @@ app = Flask(__name__)
 # Initialize data container. 
 # This is where our email adresses will be stored.
 output_data = [] 
+
 url_to_crawl = []
 crawl_runner = CrawlerRunner()
 
@@ -55,10 +55,13 @@ async def scrape() -> Response:
     Launch scrapy script.
     """
 
-    scrape_with_crochet(baseURL=url_to_crawl[0]) # Passing that URL to our Scraping Function
+    # Passing URL to Scraping Function.
+    scrape_with_crochet(baseURL=url_to_crawl[0]) 
 
-    await asyncio.sleep(20) # Pause the function while the scrapy spider is running
+    # Pause the function while the scrapy spider is running.
+    await asyncio.sleep(20) 
 
+    # Write result into data.json file.
     json_obj = json.dumps(output_data, indent=4)
     with open("data.json", "w") as outfile:
         outfile.write(json_obj)
@@ -67,20 +70,22 @@ async def scrape() -> Response:
 
 @crochet.run_in_reactor
 def scrape_with_crochet(baseURL):
-    # This will connect to the dispatcher that will kind of loop the code between these two functions.
+    """
+    Connect to the dispatcher that will kind of loop the code 
+    between this function and `crawler_result(item, response, spider)`.
+    """
     dispatcher.connect(_crawler_result, signal=signals.item_scraped)
     
-    # This will connect to the ReviewspiderSpider function in our scrapy file and after each yield will pass to the crawler_result function.
+    # This will connect to the spider function in scrapy file and after each yield will pass to the crawler_result function.
     eventual = crawl_runner.crawl(ScrapingSpider, category = baseURL)
     return eventual
 
-#This will append the data to the output data list.
 def _crawler_result(item, response, spider):
+    """
+    Append the data to the output data list.
+    """
     output_data.append(dict(item))
 
 
 if __name__ == '__main__':
     app.run(threaded=True)
-
-
-# https://www.scrapebay.com/data_tables/
