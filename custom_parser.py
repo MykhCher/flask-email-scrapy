@@ -18,7 +18,7 @@ class Parser:
         
         # Comparison with different types of 
         # static elements (videos, photos, so on)
-        restr_types = ['video', 'image']
+        restr_types = ['video', 'image', 'audio', 'text']
         try:
             if mimetypes.guess_type(text)[0].split("/")[0] in restr_types:
                 return None
