@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block add_meta %}
+    <meta name="description" content="Home page, where user enters url to wrawl through and gather data">
+{% endblock %}
+
+{% block title %} Scrapping {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form method="POST">
+            <input class="url-input" type="url" name="url" placeholder="URL to search for emails..."><br>
+            <button class="url-submit" type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}

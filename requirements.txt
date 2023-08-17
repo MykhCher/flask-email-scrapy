@@ -1,0 +1,5 @@
+Flask[async]==2.3.2
+scrapy==2.10.0
+scrapy-selenium==0.0.7
+pymongo==4.4.1
+crochet==2.1.1
