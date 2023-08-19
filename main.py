@@ -43,10 +43,6 @@ def submit() -> str:
     if len(url_to_crawl) != 0:
         url_to_crawl.clear()
     url_to_crawl.append(request.form['url'])
-    
-    output_data.clear()
-    if os.path.exists("data.json"): 
-        os.remove("data.json")
         
     return redirect(url_for('scrape'))
 
@@ -61,11 +57,6 @@ async def scrape() -> Response:
 
     # Pause the function while the scrapy spider is running.
     await asyncio.sleep(3) 
-
-    # Write result into data.json file.
-    json_obj = json.dumps(output_data, indent=4)
-    with open("data.json", "w") as outfile:
-        outfile.write(json_obj)
     
     # Call Golang script to insert data into MongoDB
     for item in output_data:
