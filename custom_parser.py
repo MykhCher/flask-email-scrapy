@@ -21,7 +21,7 @@ class Parser:
         restr_types = ['video', 'image', 'audio', 'text']
         try:
             if mimetypes.guess_type(text)[0].split("/")[0] in restr_types:
-                return None
+                return False
         except AttributeError:
             pass
 

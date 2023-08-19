@@ -8,6 +8,7 @@ crochet.setup()
 import os
 import json
 import asyncio
+import requests
 
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask.wrappers import Response
@@ -52,24 +53,31 @@ def submit() -> str:
 @app.route("/scrape")
 async def scrape() -> Response:
     """
-    Launch scrapy script.
+    Launch scrapy script. Call Golang script to insert data into MongoDB.
     """
 
     # Passing URL to Scraping Function.
     scrape_with_crochet(baseURL=url_to_crawl[0]) 
 
     # Pause the function while the scrapy spider is running.
-    await asyncio.sleep(20) 
+    await asyncio.sleep(3) 
 
     # Write result into data.json file.
     json_obj = json.dumps(output_data, indent=4)
     with open("data.json", "w") as outfile:
         outfile.write(json_obj)
+    
+    # Call Golang script to insert data into MongoDB
+    for item in output_data:
+        golang_url = "http://localhost:8081/insert"
+        response = requests.post(golang_url, json=item)
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to insert data into Golang script"})
 
     return jsonify(output_data)
 
 @crochet.run_in_reactor
-def scrape_with_crochet(baseURL):
+def scrape_with_crochet(baseURL: str):
     """
     Connect to the dispatcher that will kind of loop the code 
     between this function and `crawler_result(item, response, spider)`.

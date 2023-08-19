@@ -1,3 +1,10 @@
+# Virtual environment
 venv
+
+# Cache and test data
 __pycache__
 data.json
+
+# Go staff
+go.mod
+go.sum
